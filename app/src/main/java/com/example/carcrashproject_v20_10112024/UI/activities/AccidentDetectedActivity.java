@@ -1,4 +1,4 @@
-package com.example.carcrashproject_v20_10112024.activities;
+package com.example.carcrashproject_v20_10112024.UI.activities;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,17 +11,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.carcrashproject_v20_10112024.R;
-import com.example.carcrashproject_v20_10112024.db.models.Accident;
-import com.example.carcrashproject_v20_10112024.db.models.Entity;
+import com.example.carcrashproject_v20_10112024.Data.db.models.Accident;
 
 
 import android.util.Log;
 import android.view.View;
 
-import com.example.carcrashproject_v20_10112024.db.provider.AccidentsTableHelper;
-import com.example.carcrashproject_v20_10112024.db.provider.AlarmsTableHelper;
-import com.example.carcrashproject_v20_10112024.db.provider.DBHelper;
-import com.example.carcrashproject_v20_10112024.db.provider.EntitiesTableHelper;
+import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentsTableHelper;
+import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelper;
+import com.example.carcrashproject_v20_10112024.Data.db.provider.DBHelper;
+import com.example.carcrashproject_v20_10112024.Data.db.provider.EntitiesTableHelper;
+import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -72,9 +72,7 @@ public class AccidentDetectedActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
-        int alarmId = Integer.parseInt(getIntent().getExtras().get("AlarmId").toString());
-
-
+        int alarmId = Integer.parseInt(getIntent().getExtras().get(Constants.ALARM_ID_KEY).toString());
 
         if(view == findViewById(R.id.Option3)){
             changeAlarmOptionId(3, alarmId);

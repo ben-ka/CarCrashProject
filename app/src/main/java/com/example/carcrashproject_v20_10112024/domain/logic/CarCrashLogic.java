@@ -1,4 +1,4 @@
-package com.example.carcrashproject_v20_10112024.logic;
+package com.example.carcrashproject_v20_10112024.domain.logic;
 
 import android.hardware.SensorEvent;
 

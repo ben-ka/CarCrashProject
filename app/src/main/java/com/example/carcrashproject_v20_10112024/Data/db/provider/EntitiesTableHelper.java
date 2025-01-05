@@ -1,11 +1,11 @@
-package com.example.carcrashproject_v20_10112024.db.provider;
+package com.example.carcrashproject_v20_10112024.Data.db.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.carcrashproject_v20_10112024.db.models.Entity;
+import com.example.carcrashproject_v20_10112024.Data.db.models.Entity;
 
 public class EntitiesTableHelper {
     public static final String ENTITIES_TABLE_NAME = "Entities";

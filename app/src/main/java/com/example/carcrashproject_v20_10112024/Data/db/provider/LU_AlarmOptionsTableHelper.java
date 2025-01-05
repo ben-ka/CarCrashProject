@@ -1,10 +1,10 @@
-package com.example.carcrashproject_v20_10112024.db.provider;
+package com.example.carcrashproject_v20_10112024.Data.db.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.carcrashproject_v20_10112024.db.models.AlarmOption;
+import com.example.carcrashproject_v20_10112024.Data.db.models.AlarmOption;
 
 public class LU_AlarmOptionsTableHelper {
     public static final String ALARM_OPTIONS_TABLE_NAME = "LU_AlarmOptions";

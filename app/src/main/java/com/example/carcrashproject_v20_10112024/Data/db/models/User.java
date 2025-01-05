@@ -1,4 +1,4 @@
-package com.example.carcrashproject_v20_10112024.db.models;
+package com.example.carcrashproject_v20_10112024.Data.db.models;
 public class User {
     private int id;
     private int entityId;

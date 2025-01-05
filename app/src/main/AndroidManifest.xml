@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
-    <!-- Add location permissions here -->
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Location and other permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SENSORS" />
     <uses-permission android:name="android.permission.SET_ALARM" />
-
-    <uses-feature
-        android:name="android.hardware.sensor.accelerometer"
-        android:required="true" />
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SENSORS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+
+
+    <!-- Accelerometer requirement -->
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -23,27 +29,28 @@
         android:theme="@style/Theme.carcrashproject_v20_10112024"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        tools:targetApi="31">
 
-        tools:targetApi="31" >
+        <!-- Main Activity -->
         <activity
-            android:name=".activities.MainActivity"
-            android:exported="true" >
+            android:name=".UI.activities.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
         </activity>
+
+        <!-- AccidentDetected Activity -->
         <activity
-            android:name=".activities.AccidentDetectedActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:name=".UI.activities.AccidentDetectedActivity"
+            android:exported="true" />
 
-            <!--    <category android:name="android.intent.category.LAUNCHER" /> -->
-
-            </intent-filter>
-        </activity>
+        <!-- CrashDetectionService Declaration -->
+        <service
+            android:name=".domain.services.CrashDetectionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
     </application>
-
 </manifest>

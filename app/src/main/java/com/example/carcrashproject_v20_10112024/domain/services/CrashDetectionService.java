@@ -1,4 +1,4 @@
-package com.example.carcrashproject_v20_10112024.services;
+package com.example.carcrashproject_v20_10112024.domain.services;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,7 +9,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.LocationListener;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -17,13 +16,26 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.carcrashproject_v20_10112024.R;
-import com.example.carcrashproject_v20_10112024.logic.CarCrashLogic;
+import com.example.carcrashproject_v20_10112024.domain.logic.CarCrashLogic;
+import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 
 public class CrashDetectionService extends Service implements SensorEventListener{
 
     private static final String CHANNEL_ID = "CrashDetectionChannel";
     private SensorManager sensorManager;
     private Sensor accelerometer;
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // Your crash detection logic here
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if (sensorManager != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        return START_STICKY;
+    }
+
 
 
     @Override
@@ -72,7 +84,7 @@ public class CrashDetectionService extends Service implements SensorEventListene
         // checks if the algorithm in te logic deems the sensorEvent as a crash
         if(CarCrashLogic.checkCrash(sensorEvent)){
             // Notify the app about the crash
-            Intent crashIntent = new Intent("com.example.CRASH_DETECTED");
+            Intent crashIntent = new Intent(Constants.CRASH_DETECTED_ACTION);
             sendBroadcast(crashIntent);
         }
     }

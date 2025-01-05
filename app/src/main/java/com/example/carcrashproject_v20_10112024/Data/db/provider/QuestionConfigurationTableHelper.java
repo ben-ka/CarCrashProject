@@ -1,4 +1,4 @@
-package com.example.carcrashproject_v20_10112024.db.provider;
+package com.example.carcrashproject_v20_10112024.Data.db.provider;
 
 import android.database.sqlite.SQLiteDatabase;
 
