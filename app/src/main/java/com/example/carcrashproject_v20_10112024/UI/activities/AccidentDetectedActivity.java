@@ -1,5 +1,6 @@
 package com.example.carcrashproject_v20_10112024.UI.activities;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
@@ -76,15 +77,17 @@ public class AccidentDetectedActivity extends AppCompatActivity implements View.
 
         if(view == findViewById(R.id.Option3)){
             changeAlarmOptionId(3, alarmId);
+            Intent intent = new Intent(AccidentDetectedActivity.this, MainActivity.class);
+            startActivity(intent);
         }
         else if(view == findViewById(R.id.Option2)){
             changeAlarmOptionId(2, alarmId);
-            // TODO - create an Accident row
+            // TODO - create an Accident row ✔️
             createNewAccident(alarmId);
         }
         else if(view == findViewById(R.id.Option1)){
             changeAlarmOptionId(1, alarmId);
-            // TODO - create an Accident row
+            // TODO - create an Accident row ✔️
             createNewAccident(alarmId);
         }
 

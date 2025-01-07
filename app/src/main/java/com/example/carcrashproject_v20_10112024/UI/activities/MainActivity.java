@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,18 +31,22 @@ import com.example.carcrashproject_v20_10112024.R;
 import com.example.carcrashproject_v20_10112024.Data.db.models.Alarm;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelper;
 import com.example.carcrashproject_v20_10112024.domain.services.CrashDetectionService;
+import com.example.carcrashproject_v20_10112024.domain.services.LocationProvider;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity {
 
-    private SensorManager sensorManager;
-    private Sensor accelerometer;
-    private LocationManager locationManager;
+
+
     private AlarmsTableHelper alarmsTableHelper;
+    private LocationProvider locationProvider;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    public static final String GPS_LOGGING_CHANNEL_NAME = "GPS logging channel";
 
     private BroadcastReceiver crashReceiver = new BroadcastReceiver() {
         @Override
@@ -71,14 +76,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         IntentFilter filter = new IntentFilter(Constants.CRASH_DETECTED_ACTION);
         registerReceiver(crashReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
+        //creates an instance of LocationProvider with MainActivity as it's context
+        locationProvider = new LocationProvider(this);
+        if (!locationProvider.hasLocationPermission()) {
+            requestLocationPermissions();
+
+        }
 
 
-        // Initialize LocationManager for location tracking
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        checkAndRequestLocationPermissions();
 
         // Start the CrashDetectionService
         startCrashDetectionService();
+
 
         Button reportAccidentButton = findViewById(R.id.button);
         reportAccidentButton.setOnClickListener(new View.OnClickListener() {
@@ -89,38 +98,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
     }
 
+    private void startCrashDetectionService() {
+        Intent serviceIntent = new Intent(this, CrashDetectionService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
+        Log.d("CrashDetectionService", "Service started");
+    }
+
+    private void requestLocationPermissions() {
+        requestPermissions(new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        }, LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+
     private void checkAndRequestLocationPermissions() {
-        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-            }, 1);
-        } else {
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, location -> {
-                });
-            } catch (SecurityException e) {
-                Toast.makeText(this, "Location permission is required", Toast.LENGTH_SHORT).show();
-            }
+        if (!locationProvider.hasLocationPermission()) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE
+            );
         }
     }
 
-    private void startCrashDetectionService() {
-        Intent serviceIntent = new Intent(this, CrashDetectionService.class);
-        //startService(serviceIntent);
-        ContextCompat.startForegroundService(this, serviceIntent);
-
-        Log.d("CrashDetectionService", "Service started");
-
-    }
-
-
-
-    @Override
-    public void onLocationChanged(@NonNull Location location) {
-
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -129,7 +130,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 // Permission granted, request location updates
                 if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                         checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                    Toast.makeText(this, "Permissions granted", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 // Permission denied
@@ -139,10 +141,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public Alarm handleAccidentAlarm() {
-        Location location = getLastKnownLocation();
+        Location location = getLocation();
         if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
+            Log.i(GPS_LOGGING_CHANNEL_NAME, String.format("the device latitude is: %f. the device longitude is: %f",latitude, longitude));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem")); // Set timezone to Israel
             String currentDateTime = sdf.format(Calendar.getInstance().getTime());
@@ -162,20 +165,48 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    // Helper method to get the last known location
-    private Location getLastKnownLocation() {
-        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Request location permissions if not granted
+    private Location getLocation() {
+        if (!locationProvider.hasLocationPermission()) {
+            checkAndRequestLocationPermissions();
             return null;
         }
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        try {
+            return locationProvider.getCurrentLocation();
+        } catch (SecurityException e) {
+            Toast.makeText(this, "Failed to get location: Permissions are not granted.", Toast.LENGTH_SHORT).show();
+            return null;
+        }
     }
 
+
     private void moveToAccidentDetectedActivity(){
+        //unregistering the CrashDetectionService so the second activity
+        // will not be called repeatedly
+        unregisterReceiver(crashReceiver);
         Alarm alarm = handleAccidentAlarm();
-        Intent intent = new Intent(MainActivity.this, AccidentDetectedActivity.class);
-        intent.putExtra(Constants.ALARM_ID_KEY,alarm.getId());
-        startActivity(intent);
+        if(alarm != null){
+            Intent intent = new Intent(MainActivity.this, AccidentDetectedActivity.class);
+            intent.putExtra(Constants.ALARM_ID_KEY,alarm.getId());
+            startActivity(intent);
+        }
+
+    }
+
+    //functions to reregister the service
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Register the receiver for crash detection
+        IntentFilter filter = new IntentFilter(Constants.CRASH_DETECTED_ACTION);
+        registerReceiver(crashReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Register the receiver for crash detection
+        IntentFilter filter = new IntentFilter(Constants.CRASH_DETECTED_ACTION);
+        registerReceiver(crashReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
 }
