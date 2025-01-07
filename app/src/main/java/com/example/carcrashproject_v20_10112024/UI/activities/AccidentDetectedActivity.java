@@ -21,22 +21,15 @@ import android.view.View;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentsTableHelper;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelper;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.DBHelper;
-import com.example.carcrashproject_v20_10112024.Data.db.provider.EntitiesTableHelper;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
-import com.google.android.gms.location.FusedLocationProviderClient;
+
 import com.google.android.gms.location.LocationServices;
 
 
 public class AccidentDetectedActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private FusedLocationProviderClient fusedLocationClient;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private AlarmsTableHelper alarmsTableHelper;
     private AccidentsTableHelper accidentsTableHelper;
-
-
-
-    private EntitiesTableHelper entitiesTableHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +49,6 @@ public class AccidentDetectedActivity extends AppCompatActivity implements View.
         // Initialize AlarmsTableHelper and AccidentTableHelper
         alarmsTableHelper = new AlarmsTableHelper(this);
         accidentsTableHelper = new AccidentsTableHelper(this);
-
-        // Initialize location services
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

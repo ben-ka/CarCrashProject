@@ -44,6 +44,7 @@ public class AccidentAlarmManager {
         }
     }
 
+
     private Alarm createAndSaveAlarm(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
