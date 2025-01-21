@@ -18,16 +18,18 @@ import androidx.core.view.WindowInsetsCompat;
 import android.Manifest;
 import com.example.carcrashproject_v20_10112024.R;
 import com.example.carcrashproject_v20_10112024.Data.db.models.Alarm;
-import com.example.carcrashproject_v20_10112024.domain.services.AccidentAlarmManager;
+import com.example.carcrashproject_v20_10112024.domain.managers.AccidentAlarmManager;
+import com.example.carcrashproject_v20_10112024.domain.services.CrashBroadcastReceiver;
 import com.example.carcrashproject_v20_10112024.domain.services.CrashDetectionService;
-import com.example.carcrashproject_v20_10112024.domain.services.LocationProvider;
+import com.example.carcrashproject_v20_10112024.domain.managers.LocationProvider;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 
 public class MainActivity extends AppCompatActivity {
     private LocationProvider locationProvider;
     private AccidentAlarmManager accidentAlarmManager;
-
-    private BroadcastReceiver crashReceiver = new BroadcastReceiver() {
+    private CrashBroadcastReceiver crashReceiver;
+/*
+    public BroadcastReceiver crashReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Constants.CRASH_DETECTED_ACTION.equals(intent.getAction())) {
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+ */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +60,18 @@ public class MainActivity extends AppCompatActivity {
             accidentAlarmManager.requestLocationPermissions(this);
         }
 
+
         //creates an instance of LocationProvider with MainActivity as it's context
         // and checks the permissions
         locationProvider = new LocationProvider(this);
         if (!locationProvider.hasLocationPermission()) {
             accidentAlarmManager.requestLocationPermissions(this);
+            Log.i("service logs", "service doesn't have permission");
+
         }
 
         // Register the receiver for crash detection
+        crashReceiver = new CrashBroadcastReceiver(this, accidentAlarmManager);
         IntentFilter filter = new IntentFilter(Constants.CRASH_DETECTED_ACTION);
         registerReceiver(crashReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         startCrashDetectionService();
@@ -107,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void moveToAccidentDetectedActivity(){
         //unregistering the CrashDetectionService so the second activity
         // will not be called repeatedly
-        unregisterReceiver(crashReceiver);
+        //unregisterReceiver(crashReceiver);
         Alarm alarm = accidentAlarmManager.createAccidentAlarm();
         if(alarm != null){
             Intent intent = new Intent(MainActivity.this, AccidentDetectedActivity.class);
@@ -116,11 +124,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
+
+/*
     //functions to re - register the service
     @Override
     protected void onStart() {
         super.onStart();
-        // Register the receiver for crash detection
+
         IntentFilter filter = new IntentFilter(Constants.CRASH_DETECTED_ACTION);
         registerReceiver(crashReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
@@ -128,8 +140,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Register the receiver for crash detection
         IntentFilter filter = new IntentFilter(Constants.CRASH_DETECTED_ACTION);
         registerReceiver(crashReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
+*/
+
 }

@@ -3,6 +3,7 @@ package com.example.carcrashproject_v20_10112024.domain.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -11,11 +12,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.carcrashproject_v20_10112024.R;
+import com.example.carcrashproject_v20_10112024.UI.activities.AccidentDetectedActivity;
+import com.example.carcrashproject_v20_10112024.UI.activities.MainActivity;
 import com.example.carcrashproject_v20_10112024.domain.logic.CarCrashLogic;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 
@@ -25,6 +29,7 @@ public class CrashDetectionService extends Service implements SensorEventListene
     private SensorManager sensorManager;
     private Sensor accelerometer;
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Your crash detection logic here
@@ -33,6 +38,8 @@ public class CrashDetectionService extends Service implements SensorEventListene
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
+        Log.i("service logs", "service onStart");
+
         return START_STICKY;
     }
 
@@ -41,6 +48,7 @@ public class CrashDetectionService extends Service implements SensorEventListene
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i("service logs", "service started");
 
         // Create notification for foreground service
         createNotificationChannel();
@@ -73,6 +81,37 @@ public class CrashDetectionService extends Service implements SensorEventListene
         }
     }
 
+    private void showCrashNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        // Create the notification channel (for Android O and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Crash Notifications",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Create an intent to open AccidentDetectedActivity
+        Intent intent = new Intent(this, AccidentDetectedActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // Build the notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_background) // Replace with your app's icon
+                .setContentTitle("Accident Detected")
+                .setContentText("Tap to respond to the accident.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+        // Show the notification
+        notificationManager.notify(1, builder.build());
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -84,9 +123,18 @@ public class CrashDetectionService extends Service implements SensorEventListene
         // checks if the algorithm in te logic deems the sensorEvent as a crash
         if(CarCrashLogic.checkCrash(sensorEvent)){
             // Notify the app about the crash
+
+            showCrashNotification();
             Intent crashIntent = new Intent(Constants.CRASH_DETECTED_ACTION);
             sendBroadcast(crashIntent);
+
         }
+    }
+
+    private void launchAccidentDetectedActivity() {
+        Intent intent = new Intent(this, AccidentDetectedActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Required for starting an Activity from a Service
+        startActivity(intent);
     }
 
     @Override
@@ -100,6 +148,8 @@ public class CrashDetectionService extends Service implements SensorEventListene
             sensorManager.unregisterListener(this);
         }
     }
+
+
 
 
 }

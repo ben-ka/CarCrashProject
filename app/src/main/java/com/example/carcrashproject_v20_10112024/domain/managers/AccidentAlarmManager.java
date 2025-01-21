@@ -1,4 +1,4 @@
-package com.example.carcrashproject_v20_10112024.domain.services;
+package com.example.carcrashproject_v20_10112024.domain.managers;
 
 import android.Manifest;
 import android.app.Activity;

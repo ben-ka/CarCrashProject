@@ -2,8 +2,10 @@ package com.example.carcrashproject_v20_10112024.Data.db.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.carcrashproject_v20_10112024.Data.db.models.Accident;
 import com.example.carcrashproject_v20_10112024.Data.db.models.Alarm;
 
 public class AlarmsTableHelper {
@@ -69,6 +71,32 @@ public class AlarmsTableHelper {
         String whereClause = ALARMS_COLUMN_ID + " = ?";
         String[] whereArgs = {String.valueOf(alarmId)};
         int rowsAffected = db.update(ALARMS_TABLE_NAME, values, whereClause, whereArgs);
+    }
+
+    public Alarm getAlarmFromAccident(Accident accident){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Alarm alarm = null;
+        // Query to get the alarm associated with the accident
+        String query = "SELECT * FROM " + ALARMS_TABLE_NAME + " WHERE " + ALARMS_COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(accident.getAlarmId())};
+
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        if (cursor != null && cursor.moveToFirst()) {
+            // Create an Alarm object and populate it with data from the cursor
+            alarm = new Alarm();
+            alarm.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ALARMS_COLUMN_ID)));
+            alarm.setLatitude(cursor.getString(cursor.getColumnIndexOrThrow(ALARMS_COLUMN_LATITUDE)));
+            alarm.setLongitude(cursor.getString(cursor.getColumnIndexOrThrow(ALARMS_COLUMN_LONGITUDE)));
+            alarm.setDateTime(cursor.getString(cursor.getColumnIndexOrThrow(ALARMS_COLUMN_DATETIME)));
+            alarm.setAlarmOptionId(cursor.getInt(cursor.getColumnIndexOrThrow(ALARMS_COLUMN_ALARM_OPTION_ID)));
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        db.close();
+        return alarm;
     }
 
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="optionTextSize"> 24sp</dimen>
+    <dimen name="optionMarginSize"> 25dp</dimen>
+    <dimen name="optionHeight"> 100dp</dimen>
+
+</resources>

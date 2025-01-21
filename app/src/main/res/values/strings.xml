@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">carcrashproject_v20_10112024</string>
+    <string name="app_name">Car Crash Project</string>
+    <string name="alert_title">זיהינו התרעה, מה קרה?</string>
+    <string name="option1">יש נפגעים צריך אמבולנס</string>
+    <string name="option2">קרתה תאונה נזק לרכוש</string>
+    <string name="option3">לא קרה כלום</string>
 </resources>

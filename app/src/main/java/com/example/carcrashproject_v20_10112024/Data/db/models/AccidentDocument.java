@@ -4,19 +4,19 @@ package com.example.carcrashproject_v20_10112024.Data.db.models;
 public class AccidentDocument {
     private int id;
     private int accidentId;
-    private String fileName;
+    private byte[] fileData;
 
     // Constructors
     public AccidentDocument() { }
 
-    public AccidentDocument(int id, int accidentId, String fileName) {
+    public AccidentDocument(int id, int accidentId, byte[] fileData) {
         this.id = id;
         this.accidentId = accidentId;
-        this.fileName = fileName;
+        this.fileData = fileData;
     }
-    public AccidentDocument(int accidentId, String fileName) {
+    public AccidentDocument(int accidentId, byte[] fileData) {
         this.accidentId = accidentId;
-        this.fileName = fileName;
+        this.fileData = fileData;
     }
 
     // Getters and Setters
@@ -36,12 +36,12 @@ public class AccidentDocument {
         this.accidentId = accidentId;
     }
 
-    public String getFileName() {
-        return fileName;
+    public byte[] getFileData() {
+        return fileData;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
     }
 }
 
