@@ -50,7 +50,7 @@ public class AccidentDocumentsTableHelper {
     public AccidentDocument getAccidentDocumentById(int documentId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
-                AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_TABLE_NAME,
+                ACCIDENT_DOCUMENTS_TABLE_NAME,
                 new String[]{AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_ID,
                         AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID,
                         AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_FILE_DATA},
@@ -67,6 +67,31 @@ public class AccidentDocumentsTableHelper {
             cursor.close();
             return new AccidentDocument(id, accidentId, fileData);
         }
+        db.close();
+
+        return null;
+    }
+
+    public AccidentDocument getDocumentByAccidentId(int accidentId){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                ACCIDENT_DOCUMENTS_TABLE_NAME,
+                new String[]{AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_ID,
+                        AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID,
+                        AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_FILE_DATA},
+                AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID + " = ?",
+                new String[]{String.valueOf(accidentId)},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_ID));
+            byte[] fileData = cursor.getBlob(cursor.getColumnIndexOrThrow(AccidentDocumentsTableHelper.ACCIDENT_DOCUMENTS_COLUMN_FILE_DATA));
+
+            cursor.close();
+            return new AccidentDocument(id, accidentId, fileData);
+        }
+        db.close();
 
         return null;
     }

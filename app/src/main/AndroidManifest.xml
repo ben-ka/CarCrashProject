@@ -33,10 +33,11 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_application_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+
         <activity
             android:name=".UI.activities.AccidentArchiveActivity"
             android:exported="false" />
@@ -55,18 +56,12 @@
         <activity
             android:name=".UI.activities.AccidentDetectedActivity"
             android:exported="true"
-            android:launchMode="singleTop"
-            /> <!-- CrashDetectionService Declaration -->
+            android:launchMode="singleTop" /> <!-- CrashDetectionService Declaration -->
         <service
             android:name=".domain.services.CrashDetectionService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
-        <receiver android:name=".domain.managers.services.Cras">
-            <intent-filter>
-                <action android:name="com.example.carcrashproject_v20_10112024.CRASH_DETECTED" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

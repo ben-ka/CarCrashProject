@@ -3,6 +3,7 @@ package com.example.carcrashproject_v20_10112024.domain.managers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,6 +12,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.carcrashproject_v20_10112024.Data.db.models.Alarm;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelper;
+import com.example.carcrashproject_v20_10112024.UI.activities.AccidentDetectedActivity;
+import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,5 +82,25 @@ public class AccidentAlarmManager {
                 },
                 LOCATION_PERMISSION_REQUEST_CODE
         );
+    }
+
+    public Intent moveToAccidentDetectedActivity() {
+        // Create an alarm
+        Alarm alarm = createAccidentAlarm();
+        if (alarm != null) {
+            Intent intent = new Intent(context, com.example.carcrashproject_v20_10112024.UI.activities.AccidentDetectedActivity.class);
+            intent.putExtra(Constants.ALARM_ID_KEY, alarm.getId());
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+
+            context.startActivity(intent);
+            AccidentDetectedActivity.isActive = true;
+            return intent;
+        } else {
+            Log.e("moveToAccidentDetected", "Alarm creation failed.");
+            return null;
+        }
+
     }
 }

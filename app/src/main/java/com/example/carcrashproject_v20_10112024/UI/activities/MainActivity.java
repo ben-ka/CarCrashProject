@@ -6,15 +6,23 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 import android.Manifest;
 import com.example.carcrashproject_v20_10112024.R;
 import com.example.carcrashproject_v20_10112024.Data.db.models.Alarm;
@@ -23,29 +31,25 @@ import com.example.carcrashproject_v20_10112024.domain.services.CrashBroadcastRe
 import com.example.carcrashproject_v20_10112024.domain.services.CrashDetectionService;
 import com.example.carcrashproject_v20_10112024.domain.managers.LocationProvider;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private LocationProvider locationProvider;
     private AccidentAlarmManager accidentAlarmManager;
     private CrashBroadcastReceiver crashReceiver;
-/*
-    public BroadcastReceiver crashReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Constants.CRASH_DETECTED_ACTION.equals(intent.getAction())) {
-                // Crash detected - handle it
-                Toast.makeText(context, "Crash detected!", Toast.LENGTH_SHORT).show();
-                moveToAccidentDetectedActivity();
-            }
-        }
-    };
 
- */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.bottom_nav_menu, menu);
+        return true;
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -53,6 +57,27 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent intent;
+            if (item.getItemId() == R.id.nav_archive) {
+                Log.i("Menu log", "archive pressed");
+                intent = new Intent(MainActivity.this, AccidentArchiveActivity.class);
+                startActivity(intent);
+                return true;
+
+            }
+            else if (item.getItemId() == R.id.nav_home) {
+                // Handle the Home action
+                Log.i("Menu log", "archive pressed");
+                return true;
+            }
+            else{
+                return false;
+            }
+
+            });
         //creates an instance of AccidentAlarmManager with MainActivity as it's context
         // and checks the permissions
         accidentAlarmManager = new AccidentAlarmManager(this);

@@ -21,6 +21,7 @@ import com.example.carcrashproject_v20_10112024.R;
 import com.example.carcrashproject_v20_10112024.UI.activities.AccidentDetectedActivity;
 import com.example.carcrashproject_v20_10112024.UI.activities.MainActivity;
 import com.example.carcrashproject_v20_10112024.domain.logic.CarCrashLogic;
+import com.example.carcrashproject_v20_10112024.domain.managers.AccidentAlarmManager;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
 
 public class CrashDetectionService extends Service implements SensorEventListener{
@@ -28,6 +29,7 @@ public class CrashDetectionService extends Service implements SensorEventListene
     private static final String CHANNEL_ID = "CrashDetectionChannel";
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private AccidentAlarmManager accidentAlarmManager;
 
 
     @Override
@@ -49,6 +51,7 @@ public class CrashDetectionService extends Service implements SensorEventListene
     public void onCreate() {
         super.onCreate();
         Log.i("service logs", "service started");
+        accidentAlarmManager = new AccidentAlarmManager(this);
 
         // Create notification for foreground service
         createNotificationChannel();
@@ -93,23 +96,30 @@ public class CrashDetectionService extends Service implements SensorEventListene
             );
             notificationManager.createNotificationChannel(channel);
         }
-
+        /*
         // Create an intent to open AccidentDetectedActivity
         Intent intent = new Intent(this, AccidentDetectedActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Build the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background) // Replace with your app's icon
-                .setContentTitle("Accident Detected")
-                .setContentText("Tap to respond to the accident.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
 
-        // Show the notification
-        notificationManager.notify(1, builder.build());
+         */
+        if(!AccidentDetectedActivity.isActive){
+            Intent intent = accidentAlarmManager.moveToAccidentDetectedActivity();
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            // Build the notification
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_launcher_background) // Replace with your app's icon
+                    .setContentTitle("Accident Detected")
+                    .setContentText("Tap to respond to the accident.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent);
+
+            // Show the notification
+            notificationManager.notify(1, builder.build());
+        }
+
     }
 
     @Nullable
@@ -131,11 +141,6 @@ public class CrashDetectionService extends Service implements SensorEventListene
         }
     }
 
-    private void launchAccidentDetectedActivity() {
-        Intent intent = new Intent(this, AccidentDetectedActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Required for starting an Activity from a Service
-        startActivity(intent);
-    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {

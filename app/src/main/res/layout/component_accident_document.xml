@@ -91,5 +91,13 @@
             android:layout_marginTop="4dp"
             tools:text="Driver Reported" />
 
+        <ImageView
+            android:id="@+id/img_optional"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

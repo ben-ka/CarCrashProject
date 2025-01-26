@@ -25,28 +25,14 @@ public class CrashBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Constants.CRASH_DETECTED_ACTION.equals(intent.getAction())) {
             if (!isAccidentDetectedActivityActive()) {
-                moveToAccidentDetectedActivity();
+                accidentAlarmManager.moveToAccidentDetectedActivity();
             } else {
                 // Optionally, handle the broadcast differently
                 Log.d("CrashReceiver", "AccidentDetectedActivity is already active.");
             }
         }
     }
-    private void moveToAccidentDetectedActivity() {
-        // Create an alarm
-        Alarm alarm = accidentAlarmManager.createAccidentAlarm();
-        if (alarm != null) {
-            Intent intent = new Intent(context, com.example.carcrashproject_v20_10112024.UI.activities.AccidentDetectedActivity.class);
-            intent.putExtra(Constants.ALARM_ID_KEY, alarm.getId());
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-
-            context.startActivity(intent);
-        } else {
-            Log.e("moveToAccidentDetected", "Alarm creation failed.");
-        }
-    }
     private boolean isAccidentDetectedActivityActive() {
         // Use an appropriate method to check if the activity is active.
         // This could be a shared preference, a static flag, or ActivityManager.

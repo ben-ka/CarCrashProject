@@ -1,6 +1,7 @@
 package com.example.carcrashproject_v20_10112024.UI.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,10 @@ public class AccidentArchiveActivity extends AppCompatActivity {
         rvAccidents = findViewById(R.id.rvAccidents);
         accidentsTableHelper = new AccidentsTableHelper(this);
         ArrayList<Accident> accidentList = accidentsTableHelper.retrieveAllAccidents();
+        Log.i("Accident archive logs", String.format("Array length %d", accidentList.size()));
+
         adapter = new AccidentArchiveAdapter(this, accidentList);
+        Log.i("Accident archive logs", String.format("length %d", adapter.getItemCount()));
         rvAccidents.setLayoutManager(new LinearLayoutManager(this));
         rvAccidents.setAdapter(adapter);
     }

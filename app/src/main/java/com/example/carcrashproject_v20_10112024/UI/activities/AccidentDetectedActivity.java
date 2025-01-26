@@ -168,4 +168,10 @@ public class AccidentDetectedActivity extends AppCompatActivity implements View.
         super.onDestroy();
         isActive = false;
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        isActive = false;
+    }
 }

@@ -50,7 +50,7 @@ public class AccidentsTableHelper {
         ArrayList<Accident> accidents = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor;
-        String query = "SELECT * FROM Accidents";
+        String query = String.format("SELECT * FROM %s", ACCIDENTS_TABLE_NAME);
         cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
