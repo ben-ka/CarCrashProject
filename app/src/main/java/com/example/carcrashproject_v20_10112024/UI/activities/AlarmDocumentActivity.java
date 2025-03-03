@@ -28,6 +28,8 @@ import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentDocumen
 import com.example.carcrashproject_v20_10112024.R;
 import com.example.carcrashproject_v20_10112024.domain.managers.CameraManager;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
+import com.example.carcrashproject_v20_10112024.domain.utils.NavigationUtil;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.ByteArrayOutputStream;
 
@@ -46,6 +48,13 @@ public class AlarmDocumentActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        NavigationUtil navigationUtil = new NavigationUtil(bottomNavigationView, this  , AlarmDocumentActivity.this);
+        navigationUtil.NavigateActivities();
+
+
+
         accidentId = Integer.parseInt(getIntent().getExtras().get(Constants.ACCIDENT_ID_KEY).toString());
         cameraManager = new CameraManager(AlarmDocumentActivity.this, accidentId, this);
         // Button to launch the camera
@@ -53,6 +62,8 @@ public class AlarmDocumentActivity extends AppCompatActivity {
         btnAddImage.setOnClickListener(view -> {
             cameraManager.openCamera();
         });
+
+
     }
 
     @Override

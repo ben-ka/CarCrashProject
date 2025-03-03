@@ -32,6 +32,8 @@ import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelp
 import com.example.carcrashproject_v20_10112024.Data.db.provider.DBHelper;
 import com.example.carcrashproject_v20_10112024.domain.services.CrashBroadcastReceiver;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
+import com.example.carcrashproject_v20_10112024.domain.utils.NavigationUtil;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AccidentDetectedActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -57,7 +59,9 @@ public class AccidentDetectedActivity extends AppCompatActivity implements View.
         Button nothingHappened = findViewById(R.id.option3);
         nothingHappened.setOnClickListener(this);
 
-
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        NavigationUtil navigationUtil = new NavigationUtil(bottomNavigationView, this  , AccidentDetectedActivity.this);
+        navigationUtil.NavigateActivities();
 
         // Initialize AlarmsTableHelper and AccidentTableHelper
         alarmsTableHelper = new AlarmsTableHelper(this);

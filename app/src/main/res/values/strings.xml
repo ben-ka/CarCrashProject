@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Car Crash Project</string>
-    <string name="alert_title">זיהינו התרעה, מה קרה?</string>
-    <string name="option1">יש נפגעים צריך אמבולנס</string>
-    <string name="option2">קרתה תאונה נזק לרכוש</string>
+    <string name="alert_title">התקבלה התראה על תאונה</string>
+    <string name="option1">אמבולנס</string>
+    <string name="option2">דיווח על תאונה</string>
     <string name="option3">לא קרה כלום</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

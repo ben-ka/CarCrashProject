@@ -16,6 +16,8 @@ import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentDocumen
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentsTableHelper;
 import com.example.carcrashproject_v20_10112024.R;
 import com.example.carcrashproject_v20_10112024.domain.managers.AccidentArchiveAdapter;
+import com.example.carcrashproject_v20_10112024.domain.utils.NavigationUtil;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,14 @@ public class AccidentArchiveActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_accident_archive);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        NavigationUtil navigationUtil = new NavigationUtil(bottomNavigationView, this  , AccidentArchiveActivity.this);
+        navigationUtil.NavigateActivities();
+
+
         rvAccidents = findViewById(R.id.rvAccidents);
         accidentsTableHelper = new AccidentsTableHelper(this);
         ArrayList<Accident> accidentList = accidentsTableHelper.retrieveAllAccidents();

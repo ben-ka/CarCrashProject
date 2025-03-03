@@ -31,12 +31,14 @@ import com.example.carcrashproject_v20_10112024.domain.services.CrashBroadcastRe
 import com.example.carcrashproject_v20_10112024.domain.services.CrashDetectionService;
 import com.example.carcrashproject_v20_10112024.domain.managers.LocationProvider;
 import com.example.carcrashproject_v20_10112024.domain.utils.Constants;
+import com.example.carcrashproject_v20_10112024.domain.utils.NavigationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private LocationProvider locationProvider;
     private AccidentAlarmManager accidentAlarmManager;
     private CrashBroadcastReceiver crashReceiver;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
+        NavigationUtil navigationUtil = new NavigationUtil(bottomNavigationView, this  , MainActivity.this);
+        navigationUtil.NavigateActivities();
+        /*
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Intent intent;
             if (item.getItemId() == R.id.nav_archive) {
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             });
+
+         */
         //creates an instance of AccidentAlarmManager with MainActivity as it's context
         // and checks the permissions
         accidentAlarmManager = new AccidentAlarmManager(this);

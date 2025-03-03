@@ -12,6 +12,11 @@
     <color name="purple_700">#3700B3</color>
     <color name="teal_200">#03DAC5</color>
     <color name="teal_700">#018786</color>
+    <color name="accident_option_1">#f5d5c1</color>
+    <color name="accident_option_2">#c2e2fc</color>
+    <color name="accident_option_3">#f5c6f5</color>
+
+
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 </resources>

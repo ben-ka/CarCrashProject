@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.carcrashproject_v20_10112024.Data.db.models.Accident;
 import com.example.carcrashproject_v20_10112024.Data.db.models.AccidentDocument;
 import com.example.carcrashproject_v20_10112024.Data.db.models.Alarm;
+import com.example.carcrashproject_v20_10112024.Data.db.models.AlarmOption;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentDocumentsTableHelper;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelper;
 import com.example.carcrashproject_v20_10112024.R;
@@ -53,6 +54,9 @@ public class AccidentArchiveAdapter extends RecyclerView.Adapter<AccidentArchive
         Accident accident = accidents.get(position);
         holder.tvLocation.setText(String.format("%s + %s",alarm.getLatitude(), alarm.getLongitude()));
         holder.tvTime.setText(alarm.getDateTime());
+
+        int alarmOption = alarm.getAlarmOptionId();
+
         holder.tvResponseType.setText(String.valueOf(alarm.getAlarmOptionId()));
 
         AccidentDocument document = accidentDocumentsTableHelper.getDocumentByAccidentId(accident.getId());
