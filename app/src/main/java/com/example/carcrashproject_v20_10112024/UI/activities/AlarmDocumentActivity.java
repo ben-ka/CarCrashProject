@@ -8,8 +8,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,6 +43,7 @@ public class AlarmDocumentActivity extends AppCompatActivity {
     private int accidentId;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private CameraManager cameraManager;
+    private AccidentDocumentsTableHelper accidentDocumentsTableHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +54,7 @@ public class AlarmDocumentActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        accidentDocumentsTableHelper = new AccidentDocumentsTableHelper(this);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         NavigationUtil navigationUtil = new NavigationUtil(bottomNavigationView, this  , AlarmDocumentActivity.this);
@@ -56,12 +63,67 @@ public class AlarmDocumentActivity extends AppCompatActivity {
 
 
         accidentId = Integer.parseInt(getIntent().getExtras().get(Constants.ACCIDENT_ID_KEY).toString());
-        cameraManager = new CameraManager(AlarmDocumentActivity.this, accidentId, this);
+        AccidentDocument document = new AccidentDocument();
+        document.setAccidentId(accidentId);
+        cameraManager = new CameraManager(AlarmDocumentActivity.this, accidentId, this, document);
         // Button to launch the camera
-        Button btnAddImage = findViewById(R.id.add_image_button);
+        Button btnAddImage = findViewById(R.id.addImageButton);
         btnAddImage.setOnClickListener(view -> {
             cameraManager.openCamera();
         });
+
+        // questions
+        CheckBox questionInjury = findViewById(R.id.cbInjury);
+        CheckBox questionVehicleDamage = findViewById(R.id.cbVehicleDamage);
+        CheckBox questionGuilty = findViewById(R.id.cbGuilt);
+        EditText vehiclesCountET = findViewById(R.id.etVehiclesCount);
+        ImageButton increaseButton = findViewById(R.id.btnIncreaseVehicles);
+        ImageButton decreaseButton = findViewById(R.id.btnDecreaseVehicles);
+
+
+        increaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentCount = Integer.parseInt(vehiclesCountET.getText().toString());
+                currentCount++;
+                vehiclesCountET.setText(String.valueOf(currentCount));
+            }
+        });
+        decreaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentCount = Integer.parseInt(vehiclesCountET.getText().toString());
+                if (currentCount > 1) {
+                    currentCount--;
+                    vehiclesCountET.setText(String.valueOf(currentCount));
+                }
+            }
+        });
+
+        Button btnContinue = findViewById(R.id.btnContinue);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                document.setInjured(questionInjury.isChecked());
+                document.setVehicleDamaged(questionVehicleDamage.isChecked());
+                document.setGuilty(questionGuilty.isChecked());
+                document.setNumberOfCarsInvolved(Integer.valueOf(String.valueOf(vehiclesCountET.getText())));
+
+                accidentDocumentsTableHelper.insertAccidentDocument(document);
+
+                if(document.getNumberOfCarsInvolved() == 0){
+                    Intent intent = new Intent(AlarmDocumentActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+                //Intent intent = new Intent(AlarmDocumentActivity.this, InvolvedDriversActivity.class);
+                Intent intent = new Intent(AlarmDocumentActivity.this, MainActivity.class);
+                intent.putExtra(Constants.ACCIDENT_ID_KEY, document.getAccidentId());
+                intent.putExtra(Constants.VEHICLE_COUNT_KEY, document.getNumberOfCarsInvolved());
+                intent.putExtra(Constants.DRIVER_INDEX_KEY, 1);
+                startActivity(intent);
+            }
+        });
+
 
 
     }

@@ -39,7 +39,7 @@ public class AccidentAlarmManager {
                 return createAndSaveAlarm(location);
             } else {
                 Toast.makeText(context, "Location not available", Toast.LENGTH_SHORT).show();
-                return null;
+                return createAndSaveAlarmWithoutLocation();
             }
         } catch (SecurityException e) {
             Toast.makeText(context, "Failed to get location: Permissions are not granted.", Toast.LENGTH_SHORT).show();
@@ -68,6 +68,21 @@ public class AccidentAlarmManager {
         alarmsTableHelper.insertNewAlarm(newAlarm);
         return newAlarm;
     }
+
+    private Alarm createAndSaveAlarmWithoutLocation() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jerusalem"));
+        String currentDateTime = sdf.format(Calendar.getInstance().getTime());
+
+        Alarm newAlarm = new Alarm();
+        newAlarm.setLatitude(null);  // or set to "N/A" if needed
+        newAlarm.setLongitude(null);
+        newAlarm.setDateTime(currentDateTime);
+
+        alarmsTableHelper.insertNewAlarm(newAlarm);
+        return newAlarm;
+    }
+
 
     public boolean hasRequiredPermissions() {
         return locationProvider.hasLocationPermission();

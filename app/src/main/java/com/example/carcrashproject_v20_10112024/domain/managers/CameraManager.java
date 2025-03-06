@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carcrashproject_v20_10112024.Data.db.models.AccidentDocument;
 import com.example.carcrashproject_v20_10112024.Data.db.provider.AccidentDocumentsTableHelper;
-import com.example.carcrashproject_v20_10112024.R;
 
 import java.io.ByteArrayOutputStream;
 
@@ -25,11 +23,13 @@ public class CameraManager  {
     private final ActivityResultLauncher<Intent> cameraLauncher;
     private int accidentId;
     private AccidentDocumentsTableHelper documentsTableHelper;
+    private AccidentDocument document;
 
-    public CameraManager(Context context, int accidentId, AppCompatActivity activity) {
+    public CameraManager(Context context, int accidentId, AppCompatActivity activity, AccidentDocument document) {
         this.context = context;
         this.accidentId = accidentId;
         this.activity = activity;
+        this.document = document;
         this.cameraLauncher = activity.registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -53,22 +53,17 @@ public class CameraManager  {
     private void handleCameraResult(Intent data) {
         Bitmap photo = (Bitmap) data.getExtras().get("data");
         if (photo != null) {
-            saveImageToDatabase(photo);
+            saveImageToDocument(photo);
         } else {
             Toast.makeText(context, "Failed to capture image.", Toast.LENGTH_SHORT).show();
         }
     }
-    private void saveImageToDatabase(Bitmap bitmap) {
+    private void saveImageToDocument(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] imageBytes = stream.toByteArray();
 
-        AccidentDocument accidentDocument = new AccidentDocument(accidentId, imageBytes);
-
-        // Assuming a DocumentTableHelper instance exists
-        AccidentDocumentsTableHelper documentsTableHelper = new AccidentDocumentsTableHelper(context);
-        documentsTableHelper.insertAccidentDocument(accidentDocument);
-
+        document.setFileData(imageBytes);
         Toast.makeText(context, "Image saved successfully!", Toast.LENGTH_SHORT).show();
     }
     public Bitmap displayImageFromDatabase(int documentId) {

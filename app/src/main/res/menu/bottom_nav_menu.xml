@@ -4,12 +4,12 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="Home"
+        android:title="בית"
         app:showAsAction="never" />
     <item
         android:id="@+id/nav_archive"
         android:icon="@drawable/ic_archive"
-        android:title="Archive"
+        android:title="ארכיון"
         app:showAsAction="never" />
 
 

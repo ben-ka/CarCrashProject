@@ -21,7 +21,12 @@ import com.example.carcrashproject_v20_10112024.Data.db.provider.AlarmsTableHelp
 import com.example.carcrashproject_v20_10112024.R;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 public class AccidentArchiveAdapter extends RecyclerView.Adapter<AccidentArchiveAdapter.ViewHolder> {
     private List<Accident> accidents = new ArrayList<>();
@@ -30,10 +35,16 @@ public class AccidentArchiveAdapter extends RecyclerView.Adapter<AccidentArchive
     private AlarmsTableHelper alarmsTableHelper;
     private AccidentDocumentsTableHelper accidentDocumentsTableHelper;
 
+    public HashMap<Integer, String> alarmOptions = new HashMap<>();
+
+
     public AccidentArchiveAdapter(Context context, List<Accident> accidents) {
         this.context = context;
         this.accidents = accidents;
         alarmsTableHelper = new AlarmsTableHelper(context);
+        alarmOptions.put(1,"נדרש אמבולנס");
+        alarmOptions.put(2,"נזק לרכוש, לא נדרש אמבולנס");
+
         for (Accident accident: accidents)
         {
             alarms.add(alarmsTableHelper.getAlarmFromAccident(accident));
@@ -52,12 +63,14 @@ public class AccidentArchiveAdapter extends RecyclerView.Adapter<AccidentArchive
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Alarm alarm = alarms.get(position);
         Accident accident = accidents.get(position);
-        holder.tvLocation.setText(String.format("%s + %s",alarm.getLatitude(), alarm.getLongitude()));
+        //holder.tvLocation.setText(String.format("%s + %s",alarm.getLatitude(), alarm.getLongitude()));
+        holder.tvLocation.setText(LocationProvider.getAddressFromLocation(context, Double.parseDouble(alarm.getLatitude()), Double.parseDouble(alarm.getLongitude())));
+
         holder.tvTime.setText(alarm.getDateTime());
 
         int alarmOption = alarm.getAlarmOptionId();
 
-        holder.tvResponseType.setText(String.valueOf(alarm.getAlarmOptionId()));
+        holder.tvResponseType.setText(alarmOptions.get(alarmOption));
 
         AccidentDocument document = accidentDocumentsTableHelper.getDocumentByAccidentId(accident.getId());
         if (document != null && document.getFileData() != null) {

@@ -14,34 +14,53 @@ public class AccidentDocumentsTableHelper {
     public static final String ACCIDENT_DOCUMENTS_COLUMN_ID = "Id";
     public static final String ACCIDENT_DOCUMENTS_COLUMN_FILE_DATA = "FileData";
     public static final String ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID = "AccidentId";
+    public static final String ACCIDENT_DOCUMENTS_COLUMN_IS_INJURED = "isInjured";
+    public static final String ACCIDENT_DOCUMENTS_COLUMN_IS_VEHICLE_DAMAGED = "isVehicleDamaged";
+    public static final String ACCIDENT_DOCUMENTS_COLUMN_IS_GUILTY = "isGuilty";
+    public static final String ACCIDENT_DOCUMENTS_COLUMN_NUMBER_OF_CARS_INVOLVED = "numberOfCarsInvolved";
+
+
 
     private DBHelper dbHelper;
     public AccidentDocumentsTableHelper(Context context){
         dbHelper = new DBHelper(context);
     }
-
     public static void createAccidentDocumentsTable(SQLiteDatabase db) {
         String CreateAccidentDocumentsTable = String.format(
                 "CREATE TABLE %s (" +
                         "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "%s INTEGER, " +
                         "%s BLOB, " +
-                        "FOREIGN KEY (%s) REFERENCES %s(%s)" +
+                        "%s INTEGER, " +
+                        "%s INTEGER, " +
+                        "%s INTEGER, " +
+                        "%s INTEGER, " +
+                        "FOREIGN KEY (%s) REFERENCES %s(%s) " +
                         ");",
                 ACCIDENT_DOCUMENTS_TABLE_NAME,
                 ACCIDENT_DOCUMENTS_COLUMN_ID,
                 ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID,
                 ACCIDENT_DOCUMENTS_COLUMN_FILE_DATA,
-                ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID, "Accidents", "Id" // References Accidents(Id)
+                ACCIDENT_DOCUMENTS_COLUMN_IS_INJURED,
+                ACCIDENT_DOCUMENTS_COLUMN_IS_VEHICLE_DAMAGED,
+                ACCIDENT_DOCUMENTS_COLUMN_IS_GUILTY,
+                ACCIDENT_DOCUMENTS_COLUMN_NUMBER_OF_CARS_INVOLVED,
+                ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID, "Accidents", "Id" // Moved to the correct place
         );
         db.execSQL(CreateAccidentDocumentsTable);
     }
+
 
     public AccidentDocument insertAccidentDocument(AccidentDocument document){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ACCIDENT_DOCUMENTS_COLUMN_FILE_DATA, document.getFileData());
         values.put(ACCIDENT_DOCUMENTS_COLUMN_ACCIDENT_ID, document.getAccidentId());
+        values.put(ACCIDENT_DOCUMENTS_COLUMN_IS_INJURED, document.getInjured());
+        values.put(ACCIDENT_DOCUMENTS_COLUMN_IS_VEHICLE_DAMAGED, document.getVehicleDamaged());
+        values.put(ACCIDENT_DOCUMENTS_COLUMN_IS_GUILTY, document.getGuilty());
+        values.put(ACCIDENT_DOCUMENTS_COLUMN_NUMBER_OF_CARS_INVOLVED, document.getNumberOfCarsInvolved());
+
         long id = db.insert(ACCIDENT_DOCUMENTS_TABLE_NAME, null, values);
         document.setId((int) id);
         db.close();

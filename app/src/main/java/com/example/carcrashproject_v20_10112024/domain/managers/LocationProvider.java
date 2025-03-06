@@ -3,10 +3,17 @@ package com.example.carcrashproject_v20_10112024.domain.managers;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 
 import androidx.core.content.ContextCompat;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class LocationProvider {
     private final Context context;
@@ -61,5 +68,19 @@ public class LocationProvider {
             }
         }
         return null;
+    }
+
+    public static String getAddressFromLocation(Context context, double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                return address.getAddressLine(0); // Full address
+            }
+        } catch (IOException e) {
+            Log.e("LocationHelper", "Geocoder failed", e);
+        }
+        return "Address not found";
     }
 }

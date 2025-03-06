@@ -37,7 +37,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
-
+        <activity
+            android:name=".UI.activities.InvolvedDriversActivity"
+            android:exported="false" />
         <activity
             android:name=".UI.activities.AccidentArchiveActivity"
             android:exported="false" />
