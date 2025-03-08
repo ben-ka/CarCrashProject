@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.carcrashproject_v20_10112024.Data.db.models.InvolvedDrivers;
+import com.example.carcrashproject_v20_10112024.Data.db.models.InvolvedDriver;
 
 public class InvolvedDriversTableHelper {
     public static final String INVOLVED_DRIVERS_TABLE_NAME = "InvolvedDrivers";
@@ -26,19 +26,21 @@ public class InvolvedDriversTableHelper {
                         "%s NVARCHAR(50), " +
                         "%s NVARCHAR(50), " +
                         "%s NVARCHAR(50), " +
-                        "FOREIGN KEY (%s) REFERENCES %s(%s) " +
+                        "%s INTEGER, " +
+                        "FOREIGN KEY (%s) REFERENCES %s(%s) ON DELETE CASCADE" +
                         ");",
                 INVOLVED_DRIVERS_TABLE_NAME,
                 INVOLVED_DRIVERS_COLUMN_ID,
                 INVOLVED_DRIVERS_COLUMN_DRIVER_NAME,
                 INVOLVED_DRIVERS_COLUMN_PHONE_NUMBER,
                 INVOLVED_DRIVERS_COLUMN_LICENSE_PLATE,
+                INVOLVED_DRIVERS_COLUMN_ACCIDENT_ID,
                 INVOLVED_DRIVERS_COLUMN_ACCIDENT_ID, "Accidents", "Id"
         );
         db.execSQL(CreateInvolvedDriversTable);
     }
 
-    public InvolvedDrivers insertInvolvedDriver(InvolvedDrivers driver) {
+    public InvolvedDriver insertInvolvedDriver(InvolvedDriver driver) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(INVOLVED_DRIVERS_COLUMN_ACCIDENT_ID, driver.getAccidentId());

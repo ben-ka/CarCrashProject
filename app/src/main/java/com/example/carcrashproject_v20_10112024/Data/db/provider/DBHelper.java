@@ -11,7 +11,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "myDatabase.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 13;
 
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
         AlarmsTableHelper.createAlarmsTable(db);
         AccidentsTableHelper.createAccidentsTable(db);
         AccidentDocumentsTableHelper.createAccidentDocumentsTable(db);
+        InvolvedDriversTableHelper.createInvolvedDriversTable(db);
         LU_AlarmOptionsTableHelper.createAlarmOptionsTable(db);
         QuestionConfigurationTableHelper.createQuestionConfigurationTable(db);
         LU_AnswerTypesTableHelper.createAnswerTypesTable(db);

@@ -115,16 +115,14 @@ public class AlarmDocumentActivity extends AppCompatActivity {
                     Intent intent = new Intent(AlarmDocumentActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
-                //Intent intent = new Intent(AlarmDocumentActivity.this, InvolvedDriversActivity.class);
-                Intent intent = new Intent(AlarmDocumentActivity.this, MainActivity.class);
+                Intent intent = new Intent(AlarmDocumentActivity.this, InvolvedDriversActivity.class);
+                //Intent intent = new Intent(AlarmDocumentActivity.this, MainActivity.class);
                 intent.putExtra(Constants.ACCIDENT_ID_KEY, document.getAccidentId());
                 intent.putExtra(Constants.VEHICLE_COUNT_KEY, document.getNumberOfCarsInvolved());
                 intent.putExtra(Constants.DRIVER_INDEX_KEY, 1);
                 startActivity(intent);
             }
         });
-
-
 
     }
 

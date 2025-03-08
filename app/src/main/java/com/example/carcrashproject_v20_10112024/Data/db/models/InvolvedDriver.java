@@ -1,13 +1,13 @@
 package com.example.carcrashproject_v20_10112024.Data.db.models;
 
-public class InvolvedDrivers {
+public class InvolvedDriver {
     private int id;
     private int accidentId;
     private String driverName;
     private String phoneNumber;
     private String licensePlate;
 
-    public InvolvedDrivers(int id, int accidentId, String driverName, String phoneNumber, String licensePlate) {
+    public InvolvedDriver(int id, int accidentId, String driverName, String phoneNumber, String licensePlate) {
         this.id = id;
         this.accidentId = accidentId;
         this.driverName = driverName;
@@ -15,7 +15,7 @@ public class InvolvedDrivers {
         this.licensePlate = licensePlate;
     }
 
-    public InvolvedDrivers(int accidentId, String driverName, String phoneNumber, String licensePlate) {
+    public InvolvedDriver(int accidentId, String driverName, String phoneNumber, String licensePlate) {
         this.accidentId = accidentId;
         this.driverName = driverName;
         this.phoneNumber = phoneNumber;

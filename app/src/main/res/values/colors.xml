@@ -15,9 +15,13 @@
     <color name="accident_option_1">#f5d5c1</color>
     <color name="accident_option_2">#c2e2fc</color>
     <color name="accident_option_3">#f5c6f5</color>
+ <color name="light_blue">#BFEAFF</color>
+ <color name="light_pink">#FFE0D5</color>
+ <color name="dark_blue">#1E3A5F</color>
 
 
-    <color name="white">#FFFFFF</color>
+
+ <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 </resources>
 
